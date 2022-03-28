@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  database_ignite:
+    image: postgres
+    container_name: database_ignite
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=ignit  
+    volumes:
+      - pgdata:/data/postgres
+  app:
+    build: .
+    container_name: RamonX
+    restart: always
+    depends_on:
+      - database_ignite
+    links:
+      - "database_ignite:ignit"
+    volumes:
+      - ./:/usr/app
+    # volumes:
+    #   - .:/usr/app
+    ports:
+      - "3210:3210"
+
+volumes:
+  pgdata:
+    driver: local
+networks:
+    default:
