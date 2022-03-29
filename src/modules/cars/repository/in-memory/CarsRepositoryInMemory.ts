@@ -4,12 +4,11 @@ import { ICategoriesRepository, ICreateCategoryDTO } from "../ICategoriesReposit
 import { Car } from "@modules/cars/infra/typeorm/entities/Car"
 import { Category } from "@entities/Category";
 
-class CarsRepositoryInMemory implements ICarsRepository {
-    
+class CarsRepositoryInMemory implements ICarsRepository {  
     cars: Car[] = []
 
     async create({
-        name, description, daily_rate, license_plate, fine_amount, brand, category_id }: ICreateCarsDTO): Promise<Car> {
+        name, description, daily_rate, license_plate, fine_amount, brand, category_id, id }: ICreateCarsDTO): Promise<Car> {
         const car = new Car();
         
         Object.assign(car, {
@@ -20,6 +19,7 @@ class CarsRepositoryInMemory implements ICarsRepository {
             fine_amount,
             brand,
             category_id,
+            id
         })
         await this.cars.push(car)  
         return car
@@ -49,8 +49,12 @@ class CarsRepositoryInMemory implements ICarsRepository {
     }
 
     async findById(car_id: string): Promise<Car> {
-        return this.cars.find(c => c.id === car_id)
+        return await this.cars.find(c => c.id === car_id)
     }  
+
+    async findAllCars(): Promise<Car[]> {
+        throw await this.cars;
+    }
 }
 
 export {CarsRepositoryInMemory}

@@ -6,8 +6,13 @@ import { ICreateSpecificationDTO, ISpecificationsRepository } from "../ISpecific
 
 class SpecificationRepositoryInMemory implements ISpecificationsRepository {
     specification: Specification[] = []
+    
+    async findByIds(ids: string[]): Promise<Specification[]> {
+        const specification = await this.specification.filter(spe => ids.includes(spe.id))
 
-    async findByName(name: string) {
+        return specification
+    }
+    async findByName(name: string): Promise<Specification> {
         const Specification = this.specification.find((c) => c.name === name);
         return Specification
     }
@@ -15,13 +20,14 @@ class SpecificationRepositoryInMemory implements ISpecificationsRepository {
         const all = this.specification;
         return all
     }
-    async create({ name, description }: ICreateSpecificationDTO): Promise<void> {
+    async create({ name, description }: ICreateSpecificationDTO): Promise<Specification> {
         const specification = new Specification();
 
         Object.assign(specification, {
             name, description
         })
         this.specification.push(specification)
+        return specification
     }
 
 }
